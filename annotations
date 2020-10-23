@@ -1,0 +1,45 @@
+
+import UIKit
+import MapKit
+import CoreLocation
+
+class ViewController: UIViewController, MKMapViewDelegate {
+
+    
+    @IBOutlet weak var mapView: MKMapView!
+    
+    let locationManager = CLLocationManager()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mapView.delegate = self
+        // Do any additional setup after loading the view.
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.startUpdatingLocation()
+        
+        mapView.showsUserLocation = true
+        
+        //call annotations function and put in annotationLocations
+        createAnnotations(locations: annotationLocations)
+    }
+
+    //Annotation Locations
+    let annotationLocations = [
+        ["title": "Cedar Creek Pool", "latitude": 33.865709, "longitude": -84.105741],
+        ["title": "Hales Trace Pool", "latitude": 33.862715, "longitude": -84.105827]
+    ]
+    
+    //Create Annotations Function
+    func createAnnotations(locations: [[String: Any]]) {
+        for location in locations {
+            let annotations = MKPointAnnotation()
+            annotations.title = location["title"] as? String
+            annotations.coordinate = CLLocationCoordinate2D(latitude: location["latitude"] as! CLLocationDegrees, longitude: location["longitude"] as! CLLocationDegrees)
+            mapView.addAnnotation(annotations)
+        }
+    }
+}
+//Make sure your Outlet is connected to the MKMapView on the Storyboard
+//Make sure your info.plist file has the key "Privacy - Location When in Use Usage Description" with a value
